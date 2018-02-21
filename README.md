@@ -3,8 +3,7 @@ A script I wrote for my mom that copies data from excel and pastes it to www.etp
 
 <b>Preconditions:</b>
 1. You have to be logged in the website.
-2. Have data ready in your excel file (Column A is for  part numbers and column B is for the amount of the corresponding part)
-  file name: pozicijos.xlsx (you can change it in the script file)<br>Bear in mind that this script only supports excel files having the '.xlsx' extension, therefore the script won't work with older than 2007 excel workbook versions.
+2. Have data ready in your excel file (Column A is for  part numbers and column B is for the amount of the corresponding part)<br>file name: pozicijos.xlsx (you can change it in the script file)<br>Bear in mind that this script only supports excel files having the '.xlsx' extension, therefore the script won't work with older than 2007 excel workbook versions.
 
 <b>To run the script:</b>
 1. Double click on the script file
