@@ -1,12 +1,12 @@
 # SpeedScript
 A script I wrote for my mom that copies data from excel and pastes it to www.etpbonomi.it website and submits the data. 
 
-<b>Preconditions:<b>
+<b>Preconditions://<b>
 1. You have to be logged in the website.
 2. Have data ready in your excel file (Column A is for  part numbers and column B is for the amount of the corresponding part)
   file name: pozicijos.xlsx (you can change it in the script file)
 
-<b>To run the script:<b>
+<b>To run the script:</b>
 1. Double click on the script file
 2. Press ctrl+j
 
