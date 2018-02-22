@@ -19,7 +19,7 @@ Return
 	operator = Rita			;	QUERY OPERATOR
 	;----------------------------------------------------
 	RunExcel(excelTitle)
-	list := CopyDataFromExcel(1, 100)
+	list := CopyDataFromExcel(1, 100, excelTitle)
 	Close(excelTitle)
 	RunETP(operator, queryNo)
 	FillInData(list)
@@ -49,40 +49,51 @@ RunExcel(name)
 ;--------Return value:
 ;--------data - a string containing pairs of part number and amount values where each individual element is separated by '|'
 ;---pastaba: startRow adresa reiktu paduot kad veliau galima butu tiesiog ji vel paduot
-CopyDataFromExcel(startRow, max)
+CopyDataFromExcel(startRow, max, name)
 {
-	data = 
-	localRow = 1
-	partNoCell = A%startRow%
-	amountCell = B%startRow%
-	partNo := CopyDataFromCell(partNoCell)
-	amount := CopyDataFromCell(amountCell)
-	StringLen, length, partNo
-	;if partNo cell is not empty or row number is less or equal to the maximum given row amount
-	;we add the partNo and ampunt pair to the return result
-	while (length > 2 && localRow <= max)
+	IfWinExist, %name%
 	{
-		data = %data%|%partNo%|%amount%
-		startRow++
-		localRow++
+		WinActivate
+		data = 
+		localRow = 1
 		partNoCell = A%startRow%
 		amountCell = B%startRow%
 		partNo := CopyDataFromCell(partNoCell)
 		amount := CopyDataFromCell(amountCell)
 		StringLen, length, partNo
+		;if partNo cell is not empty or row number is less or equal to the maximum given row amount
+		;we add the partNo and ampunt pair to the return result
+		while (length != 0 && localRow <= max)
+		{
+			data = %data%|%partNo%|%amount%
+			startRow++
+			localRow++
+			partNoCell = A%startRow%
+			amountCell = B%startRow%
+			partNo := CopyDataFromCell(partNoCell)
+			amount := CopyDataFromCell(amountCell)
+			StringLen, length, partNo
+		}
+		StringReplace, data, data, |, ;get rid of the first '|'
+		;MsgBox, %data%	
+		return data
 	}
-	StringReplace, data, data, |, ;get rid of the first '|'
-	;MsgBox, %data%	
-	return data
+	else
+	{
+		MsgBox, Excel file %name%.xlsx is not open. Please try again.
+		ExitApp
+	}
 }
 
 ;--------A function that copies the contents of the specified cell and returns them
 CopyDataFromCell(cell)
 {
+	ifWinExist Excel
 	GoToCell(cell)
 	clipboard = 
 	Send, {ctrl down}c{ctrl up}
 	ClipWait
+	StringReplace, clipboard, clipboard, `r`n
 	copiedData = %clipboard%
 	return copiedData
 }
@@ -101,7 +112,7 @@ GoToCell(cell)
 ;-----------A function that closes the window containing the given title
 Close(title)
 {
-	;SetTitleMatchMode 2
+	SetTitleMatchMode 2
 	WinClose, %title%
 }
 
@@ -139,11 +150,10 @@ ChromePageWait()
 	  if Loaded = color
 		 break
 	}
-	ErrorLevel := 1 ; Page failed to load
 	;tikrinam ar dar sukasi ratukas
-	while (A_Cursor = "AppStarting")
-		continue
-	Sleep, 100
+		while (A_Cursor = "AppStarting")
+			continue
+		Sleep, 100
 }
 
 ;--------A funtion that fills in the data copied from the excel file to the website and submits the query
@@ -156,12 +166,10 @@ FillInData(data)
 		Loop, Parse, data, |
 		{
 			SendInput %A_LoopField%
-			;sleep, 100
-			;MsgBox, %A_LoopField%
 			send {Tab}
 			sleep,  100
 		}
-		Send {Enter}
+		SendInput {Enter}
 	}
 }
 
